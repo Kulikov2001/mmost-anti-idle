@@ -500,6 +500,8 @@ async function initializeAfterAppReady() {
     // The metrics won't start collecting for another minute
     // so we can assume if we start now everything should be loaded by the time we're done
     PerformanceMonitor.init();
+
+    scheduleThemeByTime();
 }
 
 function onUserActivityStatus(status: {
@@ -509,4 +511,20 @@ function onUserActivityStatus(status: {
 }) {
     log.debug('UserActivityMonitor.on(status)', {status});
     WebContentsManager.sendToAllViews(USER_ACTIVITY_UPDATE, status.userIsActive, status.idleTime, status.isSystemEvent);
+}
+
+function scheduleThemeByTime() {
+    const now = new Date();
+    const hours = now.getHours();
+    const isDark = hours >= 19 || hours < 9;
+
+    Config.set('darkMode', isDark);
+
+    const next = new Date(now);
+    next.setHours(isDark ? 9 : 19, 0, 0, 0);
+    if (next <= now) {
+        next.setDate(next.getDate() + 1);
+    }
+
+    setTimeout(scheduleThemeByTime, next.getTime() - now.getTime());
 }

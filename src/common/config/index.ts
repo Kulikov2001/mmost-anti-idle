@@ -102,7 +102,7 @@ export class Config extends EventEmitter {
     setMultiple = (newData: Partial<CurrentConfig>) => {
         log.debug('setMultiple');
 
-        if (newData.darkMode && newData.darkMode !== this.darkMode) {
+        if ('darkMode' in newData && newData.darkMode !== this.darkMode) {
             this.emit('darkModeChange', newData.darkMode);
         }
         this.localConfigData = Object.assign({}, this.localConfigData, {...newData, servers: this.localConfigData?.servers});
