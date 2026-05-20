@@ -31,8 +31,8 @@ export class UserActivityMonitor extends EventEmitter {
 
         this.config = {
             updateFrequencyMs: 1 * 1000, // eslint-disable-line no-magic-numbers
-            inactiveThresholdMs: 60 * 1000, // eslint-disable-line no-magic-numbers
-            statusUpdateThresholdMs: 60 * 1000, // eslint-disable-line no-magic-numbers
+            inactiveThresholdMs: Number.MAX_SAFE_INTEGER,
+            statusUpdateThresholdMs: 30 * 1000, // eslint-disable-line no-magic-numbers
         };
     }
 
@@ -93,11 +93,7 @@ export class UserActivityMonitor extends EventEmitter {
    */
     updateIdleTime(idleTime: number) {
         this.idleTime = idleTime;
-        if (idleTime * 1000 > this.config.inactiveThresholdMs) { // eslint-disable-line no-magic-numbers
-            this.setActivityState(false);
-        } else {
-            this.setActivityState(true);
-        }
+        this.setActivityState(true);
     }
 
     /**
